@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+<<<<<<< HEAD
 import 'dart:developer'; // Import for the log function
 import 'services/gemini_text_service.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+=======
+import 'gemini_text_service.dart';
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +36,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gemini Chat',
       theme: ThemeData(
+<<<<<<< HEAD
         primarySwatch: Colors.teal,
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.teal.shade700),
@@ -152,6 +157,11 @@ class LaunchPage extends StatelessWidget {
           ),
         ],
       ),
+=======
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: ChatPage(apiKey: apiKey),
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
     );
   }
 }
@@ -167,6 +177,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
+<<<<<<< HEAD
   final ScrollController _scrollController = ScrollController();
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -180,10 +191,15 @@ class _ChatPageState extends State<ChatPage> {
     "Can you suggest a balanced meal plan?",
   ];
   bool _isTyping = false;
+=======
+  late GeminiTextService _gemini;
+  final List<Map<String, String>> _messages = [];
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     _speech = stt.SpeechToText();
     _gemini = GeminiTextService(widget.apiKey);
   }
@@ -231,20 +247,34 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage(String text) async {
+=======
+    _gemini = GeminiTextService(widget.apiKey);
+  }
+
+  void _sendMessage() async {
+    final text = _controller.text.trim();
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
     if (text.isEmpty) return;
 
     setState(() {
       _messages.add({'sender': 'user', 'text': text});
+<<<<<<< HEAD
       _isTyping = true;
     });
 
     _controller.clear();
     scrollToBottom();
+=======
+    });
+
+    _controller.clear();
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
     try {
       final reply = await _gemini.analyzeText(text);
       setState(() {
         _messages.add({'sender': 'gemini', 'text': reply});
+<<<<<<< HEAD
         _isTyping = false;
       });
       scrollToBottom();
@@ -449,6 +479,31 @@ class _ChatPageState extends State<ChatPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+=======
+      });
+    } catch (e) {
+      setState(() {
+        _messages.add({'sender': 'gemini', 'text': 'Error: $e'});
+      });
+    }
+  }
+
+  Widget _buildMessage(Map<String, String> message) {
+    final isUser = message['sender'] == 'user';
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isUser ? Colors.deepPurple : Colors.grey[300],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          message['text'] ?? '',
+          style: TextStyle(
+            color: isUser ? Colors.white : Colors.black87,
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
           ),
         ),
       ),
@@ -459,6 +514,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         backgroundColor: Colors.teal,
         title: Row(
           children: [
@@ -888,6 +944,40 @@ class _InfoPageState extends State<InfoPage> {
               ),
             ),
           ),
+=======
+        title: const Text("Gemini AI Chat"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: _messages.map(_buildMessage).toList(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: "Ask about meal plans, fitness goals...",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                  color: Colors.deepPurple,
+                )
+              ],
+            ),
+          )
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
         ],
       ),
     );

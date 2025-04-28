@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+<<<<<<< HEAD
 import 'package:ai_nutrition_chatbot/main.dart'; // Updated import to match your project name
 
 void main() {
@@ -28,5 +29,28 @@ void main() {
       find.byType(IconButton),
       findsWidgets, // Updated to check for multiple IconButtons (e.g., mic and send buttons)
     );
+=======
+import 'package:health_bot/main.dart';
+
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Provide a mock API key for testing.
+    const mockApiKey = 'test_api_key';
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MyApp(mockApiKey));
+
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+>>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
   });
 }
