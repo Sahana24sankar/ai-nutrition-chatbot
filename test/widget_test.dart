@@ -8,8 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-<<<<<<< HEAD
-import 'package:ai_nutrition_chatbot/main.dart'; // Updated import to match your project name
+import 'package:ai_nutrition_chatbot/main.dart'; // Make sure this path matches your project structure
 
 void main() {
   testWidgets('Chatbot UI smoke test', (WidgetTester tester) async {
@@ -20,37 +19,9 @@ void main() {
     await tester.pumpWidget(const MyApp(mockApiKey));
 
     // Verify that the chatbot UI is displayed.
-    expect(
-      find.text('NutriZen-Bot'), // Updated to match the correct app title
-      findsOneWidget,
-    ); // Check for the app title
+    expect(find.text('NutriZen-Bot'), findsOneWidget); // Check for app title
     expect(find.byType(TextField), findsOneWidget); // Check for the input field
-    expect(
-      find.byType(IconButton),
-      findsWidgets, // Updated to check for multiple IconButtons (e.g., mic and send buttons)
-    );
-=======
-import 'package:health_bot/main.dart';
-
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Provide a mock API key for testing.
-    const mockApiKey = 'test_api_key';
-
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(mockApiKey));
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
+    expect(find.byType(IconButton),
+        findsWidgets); // Check for mic and send buttons
   });
 }

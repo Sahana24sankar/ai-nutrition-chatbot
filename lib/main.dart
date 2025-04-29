@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-<<<<<<< HEAD
 import 'dart:developer'; // Import for the log function
 import 'services/gemini_text_service.dart';
 import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-=======
-import 'gemini_text_service.dart';
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +32,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gemini Chat',
       theme: ThemeData(
-<<<<<<< HEAD
         primarySwatch: Colors.teal,
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.teal.shade700),
@@ -58,7 +53,6 @@ class LaunchPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Teal gradient background (original colors)
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -71,12 +65,10 @@ class LaunchPage extends StatelessWidget {
               ),
             ),
           ),
-          // Content
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo with shadow effect
                 Container(
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -89,12 +81,11 @@ class LaunchPage extends StatelessWidget {
                     ],
                   ),
                   child: Image.asset(
-                    'assets/logo1.png', // Replace with your logo file
+                    'assets/logo1.png',
                     height: 150,
                   ),
                 ),
                 const SizedBox(height: 16),
-                // App name with vibrant styling
                 const Text(
                   'NutriZen-Bot',
                   style: TextStyle(
@@ -111,7 +102,6 @@ class LaunchPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                // Tagline with subtle animation
                 const Text(
                   'Optimizing the Human Equation',
                   style: TextStyle(
@@ -121,7 +111,6 @@ class LaunchPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Get Started button with modern design
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -148,7 +137,7 @@ class LaunchPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF004D40), // Dark teal text
+                      color: Color(0xFF004D40),
                     ),
                   ),
                 ),
@@ -157,11 +146,6 @@ class LaunchPage extends StatelessWidget {
           ),
         ],
       ),
-=======
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: ChatPage(apiKey: apiKey),
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
     );
   }
 }
@@ -177,7 +161,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
-<<<<<<< HEAD
   final ScrollController _scrollController = ScrollController();
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -191,15 +174,10 @@ class _ChatPageState extends State<ChatPage> {
     "Can you suggest a balanced meal plan?",
   ];
   bool _isTyping = false;
-=======
-  late GeminiTextService _gemini;
-  final List<Map<String, String>> _messages = [];
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
     _speech = stt.SpeechToText();
     _gemini = GeminiTextService(widget.apiKey);
   }
@@ -225,7 +203,7 @@ class _ChatPageState extends State<ChatPage> {
         onResult: (result) {
           setState(() {
             _spokenText = result.recognizedWords;
-            _controller.text = _spokenText; // Autofill the text field
+            _controller.text = _spokenText;
           });
         },
       );
@@ -247,34 +225,20 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage(String text) async {
-=======
-    _gemini = GeminiTextService(widget.apiKey);
-  }
-
-  void _sendMessage() async {
-    final text = _controller.text.trim();
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
     if (text.isEmpty) return;
 
     setState(() {
       _messages.add({'sender': 'user', 'text': text});
-<<<<<<< HEAD
       _isTyping = true;
     });
 
     _controller.clear();
     scrollToBottom();
-=======
-    });
-
-    _controller.clear();
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
 
     try {
       final reply = await _gemini.analyzeText(text);
       setState(() {
         _messages.add({'sender': 'gemini', 'text': reply});
-<<<<<<< HEAD
         _isTyping = false;
       });
       scrollToBottom();
@@ -302,6 +266,44 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  List<TextSpan> _processText(String text) {
+    final regex = RegExp(r'\*\*(.*?)\*\*');
+    final matches = regex.allMatches(text);
+    final spans = <TextSpan>[];
+
+    int lastMatchEnd = 0;
+    for (final match in matches) {
+      if (match.start > lastMatchEnd) {
+        spans.add(
+          TextSpan(
+            text: text.substring(lastMatchEnd, match.start),
+            style: const TextStyle(fontWeight: FontWeight.normal),
+          ),
+        );
+      }
+
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
+
+      lastMatchEnd = match.end;
+    }
+
+    if (lastMatchEnd < text.length) {
+      spans.add(
+        TextSpan(
+          text: text.substring(lastMatchEnd),
+          style: const TextStyle(fontWeight: FontWeight.normal),
+        ),
+      );
+    }
+
+    return spans;
+  }
+
   Widget _buildMessage(Map<String, String> message) {
     final isUser = message['sender'] == 'user';
     return Column(
@@ -315,7 +317,7 @@ class _ChatPageState extends State<ChatPage> {
             mainAxisAlignment:
                 isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
-              if (!isUser) // Show AI emoji for AI messages
+              if (!isUser)
                 const CircleAvatar(
                   backgroundColor: Colors.teal,
                   foregroundColor: Colors.white,
@@ -331,7 +333,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   child: RichText(
                     text: TextSpan(
-                      children: _processText(message['text'] ?? '', isUser),
+                      children: _processText(message['text'] ?? ''),
                       style: TextStyle(
                         color: isUser ? Colors.white : Colors.teal.shade700,
                         fontSize: 16,
@@ -343,7 +345,7 @@ class _ChatPageState extends State<ChatPage> {
             ],
           ),
         ),
-        if (!isUser) // Add buttons only for AI responses
+        if (!isUser)
           Padding(
             padding: const EdgeInsets.only(left: 60.0, top: 4.0),
             child: Row(
@@ -356,7 +358,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   onPressed: () {
-                    _sendMessage("Yes, it helped!"); // Predefined response
+                    _sendMessage("Yes, it helped!");
                   },
                   child: const Text(
                     "Yes",
@@ -372,7 +374,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   onPressed: () {
-                    _sendMessage("No, I need help."); // Predefined response
+                    _sendMessage("No, I need help.");
                   },
                   child: const Text(
                     "No, I need help",
@@ -388,9 +390,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   onPressed: () {
-                    _sendMessage(
-                      "Explain this further.",
-                    ); // Predefined response
+                    _sendMessage("Explain this further.");
                   },
                   child: const Text(
                     "Explain",
@@ -404,67 +404,25 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Helper function to process text and apply bold styling
-  List<TextSpan> _processText(String text, bool isUser) {
-    final regex = RegExp(r'\*\*(.*?)\*\*'); // Matches text inside ** **
-    final matches = regex.allMatches(text);
-    final spans = <TextSpan>[];
-
-    int lastMatchEnd = 0;
-    for (final match in matches) {
-      // Add normal text before the match
-      if (match.start > lastMatchEnd) {
-        spans.add(
-          TextSpan(
-            text: text.substring(lastMatchEnd, match.start),
-            style: const TextStyle(fontWeight: FontWeight.normal),
-          ),
-        );
-      }
-
-      // Add bold text for the match
-      spans.add(
-        TextSpan(
-          text: match[1], // Extract text inside ** **
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      );
-
-      lastMatchEnd = match.end;
-    }
-
-    // Add remaining normal text after the last match
-    if (lastMatchEnd < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(lastMatchEnd),
-          style: const TextStyle(fontWeight: FontWeight.normal),
-        ),
-      );
-    }
-
-    return spans;
-  }
-
   Widget _buildQueryButton(String query) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: GestureDetector(
         onTap: () {
-          _sendMessage(query); // Send the query when tapped
+          _sendMessage(query);
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.teal.shade300, // Brighter teal background
-            borderRadius: BorderRadius.circular(12), // Rounded corners
+            color: Colors.teal.shade300,
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.teal.shade700, // Border color
-              width: 1.5, // Border width
+              color: Colors.teal.shade700,
+              width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1), // Subtle shadow
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(2, 2),
               ),
@@ -474,36 +432,11 @@ class _ChatPageState extends State<ChatPage> {
             child: Text(
               query,
               style: const TextStyle(
-                color: Colors.white, // Brighter text color
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-=======
-      });
-    } catch (e) {
-      setState(() {
-        _messages.add({'sender': 'gemini', 'text': 'Error: $e'});
-      });
-    }
-  }
-
-  Widget _buildMessage(Map<String, String> message) {
-    final isUser = message['sender'] == 'user';
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isUser ? Colors.deepPurple : Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          message['text'] ?? '',
-          style: TextStyle(
-            color: isUser ? Colors.white : Colors.black87,
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
           ),
         ),
       ),
@@ -514,21 +447,18 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< HEAD
         backgroundColor: Colors.teal,
         title: Row(
           children: [
-            // Add the smaller logo
             Image.asset(
-              'assets/logo1.png', // Path to your logo file
-              height: 30, // Adjust the size of the logo
+              'assets/logo1.png',
+              height: 30,
             ),
-            const SizedBox(width: 8), // Add spacing between logo and text
-            // Add the bot name
+            const SizedBox(width: 8),
             const Text(
               "NutriZen-Bot",
               style: TextStyle(
-                fontSize: 20, // Adjust font size
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -539,8 +469,8 @@ class _ChatPageState extends State<ChatPage> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF004D40), // Dark teal
-              Color(0xFF00796B), // Medium teal
+              Color(0xFF004D40),
+              Color(0xFF00796B),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -550,7 +480,7 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Expanded(
               child: ListView(
-                controller: _scrollController, // Attach the ScrollController
+                controller: _scrollController,
                 padding: const EdgeInsets.all(8),
                 children: [
                   if (_messages.isEmpty)
@@ -569,7 +499,7 @@ class _ChatPageState extends State<ChatPage> {
                           height: 50,
                           width: 50,
                           child: Lottie.asset(
-                            'assets/walking.json', // Ensure this path is correct
+                            'assets/walking.json',
                             repeat: true,
                           ),
                         ),
@@ -589,13 +519,10 @@ class _ChatPageState extends State<ChatPage> {
                         hintText: "Ask me anything...",
                         hintStyle: TextStyle(color: Colors.grey.shade600),
                         filled: true,
-                        fillColor:
-                            Colors.white, // White background for the chat box
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            30,
-                          ), // Rounded corners
-                          borderSide: BorderSide.none, // No border
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -605,18 +532,15 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Voice button
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white, // White background for the button
+                      color: Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: Icon(
-                        _isListening
-                            ? Icons.mic
-                            : Icons.mic_none, // Dynamic icon
-                        color: Colors.teal, // Teal icon color
+                        _isListening ? Icons.mic : Icons.mic_none,
+                        color: Colors.teal,
                       ),
                       onPressed: () {
                         if (_isListening) {
@@ -628,16 +552,15 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Send button
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white, // White background for the button
+                      color: Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       icon: const Icon(
                         Icons.send,
-                        color: Colors.teal, // Teal icon color
+                        color: Colors.teal,
                       ),
                       onPressed: () {
                         _sendMessage(_controller.text.trim());
@@ -650,13 +573,6 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
       ),
-    );
-  }
-
-  dynamic newMethod() {
-    return Lottie.asset(
-      'assets/walking.json', // Ensure this path is correct
-      repeat: true,
     );
   }
 }
@@ -681,39 +597,13 @@ class _InfoPageState extends State<InfoPage> {
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
 
-  String? savedEmail; // Temporarily store the email for Sign In
-  String? savedPassword; // Temporarily store the password for Sign In
-  bool isEmailValid = true; // Track email validation status
+  String? savedEmail;
+  String? savedPassword;
+  bool isEmailValid = true;
 
   bool validateEmail(String email) {
-    // Regular expression for validating email
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
     return emailRegex.hasMatch(email);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2, // Two tabs: Sign In and Log In
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.teal,
-          title: const Text("Welcome", style: TextStyle(color: Colors.white)),
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            tabs: [Tab(text: "Sign Up"), Tab(text: "Log In")],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            // Sign Up Tab
-            _buildSignUpTab(),
-            // Log In Tab
-            _buildLogInTab(),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildSignUpTab() {
@@ -731,7 +621,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Username TextField
           TextField(
             controller: signUpUsernameController,
             decoration: InputDecoration(
@@ -746,7 +635,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Email TextField
           TextField(
             controller: signUpEmailController,
             onChanged: (value) {
@@ -768,7 +656,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Password TextField
           TextField(
             controller: signUpPasswordController,
             obscureText: true,
@@ -784,7 +671,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Confirm Password TextField
           TextField(
             controller: signUpConfirmPasswordController,
             obscureText: true,
@@ -800,7 +686,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Sign Up Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,
@@ -872,7 +757,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Email TextField
           TextField(
             controller: loginEmailController,
             decoration: InputDecoration(
@@ -887,7 +771,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Password TextField
           TextField(
             controller: loginPasswordController,
             obscureText: true,
@@ -903,7 +786,6 @@ class _InfoPageState extends State<InfoPage> {
             ),
           ),
           const SizedBox(height: 16),
-          // Log In Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,
@@ -944,41 +826,30 @@ class _InfoPageState extends State<InfoPage> {
               ),
             ),
           ),
-=======
-        title: const Text("Gemini AI Chat"),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(8),
-              children: _messages.map(_buildMessage).toList(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: "Ask about meal plans, fitness goals...",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                  color: Colors.deepPurple,
-                )
-              ],
-            ),
-          )
->>>>>>> 1ece1723fc807739000f3771190c7af21b933c45
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.teal,
+          title: const Text("Welcome", style: TextStyle(color: Colors.white)),
+          bottom: const TabBar(
+            indicatorColor: Colors.white,
+            tabs: [Tab(text: "Sign Up"), Tab(text: "Log In")],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildSignUpTab(),
+            _buildLogInTab(),
+          ],
+        ),
       ),
     );
   }
